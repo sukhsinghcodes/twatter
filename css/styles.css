@@ -1,0 +1,26 @@
+.jumbotron { font-size: 4rem; text-align: center; }
+
+.stream {
+	margin-top: 50px;
+}
+.example-enter {
+	height: 0;
+	opacity: 0.01;
+}
+
+.example-enter.example-enter-active {
+	opacity: 1;
+	height: 50px;
+	transition: opacity 500ms ease-in, height 0.5s;
+}
+
+.example-leave {
+	opacity: 1;
+	height: 50px;
+}
+
+.example-leave.example-leave-active {
+	opacity: 0.01;
+	height: 0;
+	transition: opacity 300ms ease-in, height 300ms ease-out;
+}
