@@ -4,11 +4,14 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 class Post extends React.Component {
 	constructor(props) {
 		super(props);
-		this.comment = props.comment;
+		this.post = props.post;
 	}
 	render() {
 		return (
-			<li className="list-group-item">{this.comment}</li>
+			<div className="list-group-item">
+				<p className="list-group-item-text">{this.post.text}</p>
+				<p className="help-block"><small>{this.post.author} - <em>{this.post.timestamp}</em></small></p>
+			</div>
 		);
 	}
 }
@@ -16,20 +19,20 @@ class Post extends React.Component {
 export default class Stream extends React.Component {
 	constructor(props) {
 		super(props);
-		this.comments = props.comments;
+		this.posts = props.posts;
 	}
 	render() {
 		var rows = [];
-		for(var startI = this.comments.length-1, i = startI; i >= 0; i--) {
-			rows.push(<Post key={this.comments[i].id} comment={this.comments[i].text} />);
+		for(var startI = this.posts.length-1, i = startI; i >= 0; i--) {
+			rows.push(<Post key={this.posts[i].id} post={this.posts[i]} />);
 		}
 		return (
 			<div className="stream">
-				<ul className="list-group">
+				<div className="list-group">
 					<ReactCSSTransitionGroup transitionName="example" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
 						{rows}
 					</ReactCSSTransitionGroup>
-				</ul>
+				</div>
 			</div>
 		);
 	}

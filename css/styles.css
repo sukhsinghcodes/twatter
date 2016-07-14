@@ -3,6 +3,7 @@
 .stream {
 	margin-top: 50px;
 }
+
 .example-enter {
 	height: 0;
 	opacity: 0.01;
@@ -10,17 +11,17 @@
 
 .example-enter.example-enter-active {
 	opacity: 1;
-	height: 50px;
-	transition: opacity 500ms ease-in, height 0.5s;
+	height: 100%;
+	transition: opacity 500ms ease-in, height 500ms ease-in;
 }
 
 .example-leave {
 	opacity: 1;
-	height: 50px;
+	height: 100%;
 }
 
 .example-leave.example-leave-active {
 	opacity: 0.01;
 	height: 0;
-	transition: opacity 300ms ease-in, height 300ms ease-out;
+	transition: opacity 300ms ease-in, height 300ms ease-in;
 }

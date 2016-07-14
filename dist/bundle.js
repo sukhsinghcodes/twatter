@@ -21336,6 +21336,68 @@ var CommentBox = function (_React$Component) {
 exports.default = CommentBox;
 
 },{"react":178}],180:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Post = function () {
+	function Post(id, text) {
+		var author = arguments.length <= 2 || arguments[2] === undefined ? 'Anonymous' : arguments[2];
+		var timestamp = arguments.length <= 3 || arguments[3] === undefined ? this._getTimeStamp() : arguments[3];
+
+		_classCallCheck(this, Post);
+
+		this.id = id;
+		this.text = text;
+		this.author = author;
+		this.timestamp = timestamp;
+	}
+
+	_createClass(Post, [{
+		key: "_getTimeStamp",
+		value: function _getTimeStamp() {
+			// Create a date object with the current time
+			var now = new Date();
+
+			// Create an array with the current month, day and time
+			var date = [now.getDate(), now.getMonth() + 1, now.getFullYear()];
+
+			// Create an array with the current hour, minute and second
+			var time = [now.getHours(), now.getMinutes(), now.getSeconds()];
+
+			// Determine AM or PM suffix based on the hour
+			var suffix = time[0] < 12 ? "AM" : "PM";
+
+			// Convert hour from military time
+			time[0] = time[0] < 12 ? time[0] : time[0] - 12;
+
+			// If hour is 0, set it to 12
+			time[0] = time[0] || 12;
+
+			// If seconds and minutes are less than 10, add a zero
+			for (var i = 1; i < 3; i++) {
+				if (time[i] < 10) {
+					time[i] = "0" + time[i];
+				}
+			}
+
+			// Return the formatted string
+			return date.join("/") + " " + time.join(":") + " " + suffix;
+		}
+	}]);
+
+	return Post;
+}();
+
+exports.default = Post;
+
+},{}],181:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -21368,7 +21430,7 @@ var Post = function (_React$Component) {
 
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Post).call(this, props));
 
-		_this.comment = props.comment;
+		_this.post = props.post;
 		return _this;
 	}
 
@@ -21376,9 +21438,28 @@ var Post = function (_React$Component) {
 		key: 'render',
 		value: function render() {
 			return _react2.default.createElement(
-				'li',
+				'div',
 				{ className: 'list-group-item' },
-				this.comment
+				_react2.default.createElement(
+					'p',
+					{ className: 'list-group-item-text' },
+					this.post.text
+				),
+				_react2.default.createElement(
+					'p',
+					{ className: 'help-block' },
+					_react2.default.createElement(
+						'small',
+						null,
+						this.post.author,
+						' - ',
+						_react2.default.createElement(
+							'em',
+							null,
+							this.post.timestamp
+						)
+					)
+				)
 			);
 		}
 	}]);
@@ -21394,7 +21475,7 @@ var Stream = function (_React$Component2) {
 
 		var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(Stream).call(this, props));
 
-		_this2.comments = props.comments;
+		_this2.posts = props.posts;
 		return _this2;
 	}
 
@@ -21402,14 +21483,14 @@ var Stream = function (_React$Component2) {
 		key: 'render',
 		value: function render() {
 			var rows = [];
-			for (var startI = this.comments.length - 1, i = startI; i >= 0; i--) {
-				rows.push(_react2.default.createElement(Post, { key: this.comments[i].id, comment: this.comments[i].text }));
+			for (var startI = this.posts.length - 1, i = startI; i >= 0; i--) {
+				rows.push(_react2.default.createElement(Post, { key: this.posts[i].id, post: this.posts[i] }));
 			}
 			return _react2.default.createElement(
 				'div',
 				{ className: 'stream' },
 				_react2.default.createElement(
-					'ul',
+					'div',
 					{ className: 'list-group' },
 					_react2.default.createElement(
 						_reactAddonsCssTransitionGroup2.default,
@@ -21426,7 +21507,7 @@ var Stream = function (_React$Component2) {
 
 exports.default = Stream;
 
-},{"react":178,"react-addons-css-transition-group":30}],181:[function(require,module,exports){
+},{"react":178,"react-addons-css-transition-group":30}],182:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -21447,6 +21528,10 @@ var _Stream = require('./Stream');
 
 var _Stream2 = _interopRequireDefault(_Stream);
 
+var _Post = require('./Post');
+
+var _Post2 = _interopRequireDefault(_Post);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -21463,12 +21548,15 @@ var TwatterApp = function (_React$Component) {
 
 		//props
 
-		//state
+		//private vars
 
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(TwatterApp).call(this, props));
 
+		_this._seededPosts = _this.seedData();
+
+		//state
 		_this.state = {
-			comments: [{ id: 1, text: "hello" }, { id: 2, text: "bye" }]
+			posts: _this._seededPosts
 		};
 
 		//event handlers
@@ -21481,9 +21569,9 @@ var TwatterApp = function (_React$Component) {
 	_createClass(TwatterApp, [{
 		key: 'postComment',
 		value: function postComment(comment) {
-			var newComments = this.state.comments;
-			newComments.push({ id: this.state.comments.length + 1, text: comment });
-			this.setState({ comments: newComments });
+			var newPosts = this.state.posts;
+			newPosts.push(new _Post2.default(this.state.posts.length + 1, comment, undefined));
+			this.setState({ posts: newPosts });
 		}
 	}, {
 		key: 'render',
@@ -21492,8 +21580,17 @@ var TwatterApp = function (_React$Component) {
 				'div',
 				null,
 				_react2.default.createElement(_CommentBox2.default, { postCommentCallback: this._postCommentCallback }),
-				_react2.default.createElement(_Stream2.default, { comments: this.state.comments })
+				_react2.default.createElement(_Stream2.default, { posts: this.state.posts })
 			);
+		}
+	}, {
+		key: 'seedData',
+		value: function seedData() {
+			var seedPosts = [];
+			seedPosts.push(new _Post2.default(1, 'hello', 'John Smith', '01/07/16 01:00 PM'));
+			seedPosts.push(new _Post2.default(2, 'bye', 'Jane Doe', '01/07/16 01:03 PM'));
+			seedPosts.push(new _Post2.default(3, 'ok, that\'s fine', 'John Smith', '02/07/16 10:56 AM'));
+			return seedPosts;
 		}
 	}]);
 
@@ -21502,4 +21599,4 @@ var TwatterApp = function (_React$Component) {
 
 _reactDom2.default.render(_react2.default.createElement(TwatterApp, null), content);
 
-},{"./CommentBox":179,"./Stream":180,"react":178,"react-dom":31}]},{},[181]);
+},{"./CommentBox":179,"./Post":180,"./Stream":181,"react":178,"react-dom":31}]},{},[182]);
