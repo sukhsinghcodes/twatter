@@ -5,6 +5,7 @@ import Stream from './Stream';
 import Post from './Post';
 import Syncano from 'syncano';
 
+const instanceName = 'dry-sunset-6624', className = 'post', apiKey = '4b58726b15e671ddba0a2d569fff23c4120e9bf9';
 
 class TwatterApp extends React.Component {
 	constructor(props) {
@@ -12,8 +13,8 @@ class TwatterApp extends React.Component {
 
 		//vars
 		this.syncano = Syncano({
-			apiKey: '4b58726b15e671ddba0a2d569fff23c4120e9bf9',
-			instance: 'dry-sunset-6624'
+			apiKey: apiKey,
+			instance: instanceName
 		});
 		this.sDO = this.syncano.DataObject;
 
@@ -25,7 +26,7 @@ class TwatterApp extends React.Component {
 	}
 	loadPostsFromServer() {
 		this.sDO.please()
-			.list({instanceName: 'dry-sunset-6624', className: 'post'})
+			.list({instanceName: instanceName, className: className})
 			.orderBy('-created_at')
 			.then((res) => {
 				var posts = [];
@@ -35,17 +36,20 @@ class TwatterApp extends React.Component {
 				if (this.state.posts !== posts) {
 					this.setState({posts: posts});
 				}
+			}).catch((err) => {
+				console.log(err);
 			});
 	}	
 	postComment(comment) {
 		var post = {
 			text: comment,
-			author: 'Anonymous'
+			author: 'Anonymous',
+			instanceName: instanceName,
+			className: className
 		}
-		this.sDO.please().create(post).then(function(post) {
-			console.log("book", book);
+		this.sDO.please().create(post).then((post) => {
 			var posts = this.state.posts;
-			posts.push(new Post(post.id, post.text, post.author));
+			posts.unshift(new Post(post.id, post.text, post.author));
 			this.setState({posts: posts});
 		});
 	}

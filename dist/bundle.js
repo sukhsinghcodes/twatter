@@ -50208,6 +50208,10 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var instanceName = 'dry-sunset-6624',
+    className = 'post',
+    apiKey = '4b58726b15e671ddba0a2d569fff23c4120e9bf9';
+
 var TwatterApp = function (_React$Component) {
 	_inherits(TwatterApp, _React$Component);
 
@@ -50219,8 +50223,8 @@ var TwatterApp = function (_React$Component) {
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(TwatterApp).call(this, props));
 
 		_this.syncano = (0, _syncano2.default)({
-			apiKey: '4b58726b15e671ddba0a2d569fff23c4120e9bf9',
-			instance: 'dry-sunset-6624'
+			apiKey: apiKey,
+			instance: instanceName
 		});
 		_this.sDO = _this.syncano.DataObject;
 
@@ -50239,7 +50243,7 @@ var TwatterApp = function (_React$Component) {
 		value: function loadPostsFromServer() {
 			var _this2 = this;
 
-			this.sDO.please().list({ instanceName: 'dry-sunset-6624', className: 'post' }).orderBy('-created_at').then(function (res) {
+			this.sDO.please().list({ instanceName: instanceName, className: className }).orderBy('-created_at').then(function (res) {
 				var posts = [];
 				res.forEach(function (post) {
 					posts.push(new _Post2.default(post.id, post.text, post.author, post.created_at.toString()));
@@ -50247,30 +50251,35 @@ var TwatterApp = function (_React$Component) {
 				if (_this2.state.posts !== posts) {
 					_this2.setState({ posts: posts });
 				}
+			}).catch(function (err) {
+				console.log(err);
 			});
 		}
 	}, {
 		key: 'postComment',
 		value: function postComment(comment) {
+			var _this3 = this;
+
 			var post = {
 				text: comment,
-				author: 'Anonymous'
+				author: 'Anonymous',
+				instanceName: instanceName,
+				className: className
 			};
 			this.sDO.please().create(post).then(function (post) {
-				console.log("book", book);
-				var posts = this.state.posts;
-				posts.push(new _Post2.default(post.id, post.text, post.author));
-				this.setState({ posts: posts });
+				var posts = _this3.state.posts;
+				posts.unshift(new _Post2.default(post.id, post.text, post.author));
+				_this3.setState({ posts: posts });
 			});
 		}
 	}, {
 		key: 'componentDidMount',
 		value: function componentDidMount() {
-			var _this3 = this;
+			var _this4 = this;
 
 			this.loadPostsFromServer();
 			setInterval(function () {
-				return _this3.loadPostsFromServer();
+				return _this4.loadPostsFromServer();
 			}, 5000);
 		}
 	}, {
