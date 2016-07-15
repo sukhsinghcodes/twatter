@@ -27,6 +27,7 @@
     "react": "^15.0.1",
     "react-addons-css-transition-group": "^15.2.1",
     "react-dom": "^15.0.1",
-    "watchify": "^3.7.0"
+    "watchify": "^3.7.0",
+    "syncano": "^1.0.22"
   }
 }

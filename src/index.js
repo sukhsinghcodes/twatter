@@ -3,30 +3,58 @@ import ReactDOM from 'react-dom';
 import CommentBox from './CommentBox';
 import Stream from './Stream';
 import Post from './Post';
+import Syncano from 'syncano';
+
 
 class TwatterApp extends React.Component {
 	constructor(props) {
 		super(props);
 
-		//props
+		//vars
+		this.syncano = Syncano({
+			apiKey: '4b58726b15e671ddba0a2d569fff23c4120e9bf9',
+			instance: 'dry-sunset-6624'
+		});
+		this.sDO = this.syncano.DataObject;
 
-		//private vars
-		this._seededPosts = this.seedData();
-		
 		//state
-		this.state = {
-			posts: this._seededPosts
-		}
+		this.state = { posts: [] };
 
 		//event handlers
 		this._postCommentCallback = (c) => this.postComment(c);
 	}
+	loadPostsFromServer() {
+		this.sDO.please()
+			.list({instanceName: 'dry-sunset-6624', className: 'post'})
+			.orderBy('-created_at')
+			.then((res) => {
+				var posts = [];
+				res.forEach((post) => {
+					posts.push(new Post(post.id, post.text, post.author, post.created_at.toString()));
+				});
+				if (this.state.posts !== posts) {
+					this.setState({posts: posts});
+				}
+			});
+	}	
 	postComment(comment) {
-		var newPosts = this.state.posts;
-		newPosts.push(new Post(this.state.posts.length+1, comment, undefined));
-		this.setState({posts: newPosts});
+		var post = {
+			text: comment,
+			author: 'Anonymous'
+		}
+		this.sDO.please().create(post).then(function(post) {
+			console.log("book", book);
+			var posts = this.state.posts;
+			posts.push(new Post(post.id, post.text, post.author));
+			this.setState({posts: posts});
+		});
+	}
+	componentDidMount() {
+		this.loadPostsFromServer();
+		setInterval(() => this.loadPostsFromServer(), 5000);
 	}
 	render() {
+		console.log('index render: ', this.state.posts);
 		return (
 			<div>
 				<CommentBox postCommentCallback={this._postCommentCallback} />
@@ -34,13 +62,7 @@ class TwatterApp extends React.Component {
 			</div>
 		);
 	}
-	seedData() {
-		var seedPosts = [];
-		seedPosts.push(new Post(1, 'hello', 'John Smith', '01/07/16 01:00 PM'));
-		seedPosts.push(new Post(2, 'bye', 'Jane Doe', '01/07/16 01:03 PM'));
-		seedPosts.push(new Post(3, 'ok, that\'s fine', 'John Smith', '02/07/16 10:56 AM'));
-		return seedPosts;
-	}
+
 }
 
 ReactDOM.render(

@@ -1,5 +1,5 @@
 export default class Post {
-	constructor(id, text, author = 'Anonymous', timestamp = this._getTimeStamp()) {
+	constructor(id = -1, text, author = 'Anonymous', timestamp = this._getTimeStamp()) {
 		this.id = id;
 		this.text = text;
 		this.author = author;

@@ -4,13 +4,13 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 class Post extends React.Component {
 	constructor(props) {
 		super(props);
-		this.post = props.post;
 	}
 	render() {
+		console.log('post render: ', this.props.post.timestamp);
 		return (
 			<div className="list-group-item">
-				<p className="list-group-item-text">{this.post.text}</p>
-				<p className="help-block"><small>{this.post.author} - <em>{this.post.timestamp}</em></small></p>
+				<p className="list-group-item-text">{this.props.post.text}</p>
+				<p className="help-block"><small>{this.props.post.author} - <em>{this.props.post.timestamp}</em></small></p>
 			</div>
 		);
 	}
@@ -19,18 +19,17 @@ class Post extends React.Component {
 export default class Stream extends React.Component {
 	constructor(props) {
 		super(props);
-		this.posts = props.posts;
 	}
 	render() {
-		var rows = [];
-		for(var startI = this.posts.length-1, i = startI; i >= 0; i--) {
-			rows.push(<Post key={this.posts[i].id} post={this.posts[i]} />);
-		}
+		var postNodes = this.props.posts.map((post) => {
+			return (<Post key={post.id} post={post} />);
+		});
+		console.log('stream render: ', postNodes);
 		return (
 			<div className="stream">
 				<div className="list-group">
 					<ReactCSSTransitionGroup transitionName="example" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
-						{rows}
+						{postNodes}
 					</ReactCSSTransitionGroup>
 				</div>
 			</div>
