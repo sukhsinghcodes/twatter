@@ -49919,16 +49919,21 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var ERROR_CLASS = 'has-error';
+
 var CommentBox = function (_React$Component) {
 	_inherits(CommentBox, _React$Component);
 
 	function CommentBox(props) {
 		_classCallCheck(this, CommentBox);
 
-		//props
+		//vars
 
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(CommentBox).call(this, props));
 
+		_this._currentValidState = '';
+
+		//props
 		_this.postCommentCallback = props.postCommentCallback;
 
 		//state
@@ -49950,14 +49955,19 @@ var CommentBox = function (_React$Component) {
 	_createClass(CommentBox, [{
 		key: 'handleTextChange',
 		value: function handleTextChange(e) {
-			this.setState({ charsLeft: 140 - e.target.value.length, commentText: e.target.value });
+
+			this.setState({ charsLeft: 140 - e.target.value.length,
+				commentText: e.target.value });
 		}
 	}, {
 		key: 'postComment',
 		value: function postComment(e) {
 			e.preventDefault();
-			this.postCommentCallback(this.state.commentText);
-			this.setState({ charsLeft: 140, commentText: '' });
+
+			if (this.state.commentText) {
+				this.postCommentCallback(this.state.commentText);
+				this.setState({ charsLeft: 140, commentText: '' });
+			}
 		}
 	}, {
 		key: 'render',
@@ -49967,7 +49977,7 @@ var CommentBox = function (_React$Component) {
 				{ className: 'commentBox' },
 				_react2.default.createElement(
 					'form',
-					{ className: 'form', onSubmit: this._postComment },
+					{ id: 'postForm', className: 'form', onSubmit: this._postComment },
 					_react2.default.createElement(
 						'div',
 						{ className: 'input-group' },
@@ -49978,7 +49988,7 @@ var CommentBox = function (_React$Component) {
 							_react2.default.createElement(
 								'button',
 								{ className: 'btn btn-primary btn-lg', type: 'submit', onClick: this._postComment },
-								_react2.default.createElement('span', { className: 'glyphicon glyphicon-send' })
+								_react2.default.createElement('span', { className: 'glyphicon glyphicon-share-alt' })
 							)
 						)
 					)
@@ -50103,7 +50113,6 @@ var Post = function (_React$Component) {
 	_createClass(Post, [{
 		key: 'render',
 		value: function render() {
-			console.log('post render: ', this.props.post.timestamp);
 			return _react2.default.createElement(
 				'div',
 				{ className: 'list-group-item' },
@@ -50149,7 +50158,6 @@ var Stream = function (_React$Component2) {
 			var postNodes = this.props.posts.map(function (post) {
 				return _react2.default.createElement(Post, { key: post.id, post: post });
 			});
-			console.log('stream render: ', postNodes);
 			return _react2.default.createElement(
 				'div',
 				{ className: 'stream' },
@@ -50174,6 +50182,64 @@ exports.default = Stream;
 },{"react":386,"react-addons-css-transition-group":238}],512:[function(require,module,exports){
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var User = function (_React$Component) {
+	_inherits(User, _React$Component);
+
+	function User(props) {
+		_classCallCheck(this, User);
+
+		//props
+
+		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(User).call(this, props));
+
+		_this.aliasChangeCallback = props.aliasChangeCallback;
+
+		//event handlers
+		_this._aliasChange = function (e) {
+			return _this.handleAliasChange(e);
+		};
+		return _this;
+	}
+
+	_createClass(User, [{
+		key: 'handleAliasChange',
+		value: function handleAliasChange(e) {
+			e.preventDefault();
+			this.aliasChangeCallback(e.target.value || 'Anonymous');
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			return _react2.default.createElement('input', { className: 'form-control input-lg text-center center-block alias-input', type: 'text', placeholder: 'Alias...', maxLength: '50', onChange: this._aliasChange });
+		}
+	}]);
+
+	return User;
+}(_react2.default.Component);
+
+exports.default = User;
+
+},{"react":386}],513:[function(require,module,exports){
+'use strict';
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
@@ -50196,6 +50262,10 @@ var _Post = require('./Post');
 
 var _Post2 = _interopRequireDefault(_Post);
 
+var _User = require('./User');
+
+var _User2 = _interopRequireDefault(_User);
+
 var _syncano = require('syncano');
 
 var _syncano2 = _interopRequireDefault(_syncano);
@@ -50210,7 +50280,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var instanceName = 'dry-sunset-6624',
     className = 'post',
-    apiKey = '4b58726b15e671ddba0a2d569fff23c4120e9bf9';
+    apiKey = '4b58726b15e671ddba0a2d569fff23c4120e9bf9',
+    channelName = 'twatter-stream';
 
 var TwatterApp = function (_React$Component) {
 	_inherits(TwatterApp, _React$Component);
@@ -50227,13 +50298,17 @@ var TwatterApp = function (_React$Component) {
 			instance: instanceName
 		});
 		_this.sDO = _this.syncano.DataObject;
+		_this.poll = _this.syncano.Channel.please().poll({ instanceName: instanceName, name: channelName });
 
 		//state
-		_this.state = { posts: [] };
+		_this.state = { posts: [], alias: 'Anonymous' };
 
 		//event handlers
 		_this._postCommentCallback = function (c) {
 			return _this.postComment(c);
+		};
+		_this._aliasChangeCallback = function (a) {
+			return _this.aliasChange(a);
 		};
 		return _this;
 	}
@@ -50243,10 +50318,10 @@ var TwatterApp = function (_React$Component) {
 		value: function loadPostsFromServer() {
 			var _this2 = this;
 
-			this.sDO.please().list({ instanceName: instanceName, className: className }).orderBy('-created_at').then(function (res) {
+			this.sDO.please().list({ instanceName: instanceName, className: className }).orderBy('-created_at').pageSize(50).then(function (res) {
 				var posts = [];
 				res.forEach(function (post) {
-					posts.push(new _Post2.default(post.id, post.text, post.author, post.created_at.toString()));
+					posts.push(new _Post2.default(post.id, post.text, post.author, post.created_at.toLocaleDateString('en-GB') + ' ' + post.created_at.toLocaleTimeString('en-GB')));
 				});
 				if (_this2.state.posts !== posts) {
 					_this2.setState({ posts: posts });
@@ -50262,9 +50337,10 @@ var TwatterApp = function (_React$Component) {
 
 			var post = {
 				text: comment,
-				author: 'Anonymous',
+				author: this.state.alias,
 				instanceName: instanceName,
-				className: className
+				className: className,
+				channel: channelName
 			};
 			this.sDO.please().create(post).then(function (post) {
 				var posts = _this3.state.posts;
@@ -50273,22 +50349,28 @@ var TwatterApp = function (_React$Component) {
 			});
 		}
 	}, {
+		key: 'aliasChange',
+		value: function aliasChange(alias) {
+			this.setState({ alias: alias });
+		}
+	}, {
 		key: 'componentDidMount',
 		value: function componentDidMount() {
 			var _this4 = this;
 
 			this.loadPostsFromServer();
-			setInterval(function () {
-				return _this4.loadPostsFromServer();
-			}, 5000);
+
+			this.poll.on('message', function (message) {
+				_this4.loadPostsFromServer();
+			});
 		}
 	}, {
 		key: 'render',
 		value: function render() {
-			console.log('index render: ', this.state.posts);
 			return _react2.default.createElement(
 				'div',
 				null,
+				_react2.default.createElement(_User2.default, { aliasChangeCallback: this._aliasChangeCallback }),
 				_react2.default.createElement(_CommentBox2.default, { postCommentCallback: this._postCommentCallback }),
 				_react2.default.createElement(_Stream2.default, { posts: this.state.posts })
 			);
@@ -50300,4 +50382,4 @@ var TwatterApp = function (_React$Component) {
 
 _reactDom2.default.render(_react2.default.createElement(TwatterApp, null), content);
 
-},{"./CommentBox":509,"./Post":510,"./Stream":511,"react":386,"react-dom":239,"syncano":506}]},{},[512]);
+},{"./CommentBox":509,"./Post":510,"./Stream":511,"./User":512,"react":386,"react-dom":239,"syncano":506}]},{},[513]);

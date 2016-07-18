@@ -6,7 +6,6 @@ class Post extends React.Component {
 		super(props);
 	}
 	render() {
-		console.log('post render: ', this.props.post.timestamp);
 		return (
 			<div className="list-group-item">
 				<p className="list-group-item-text">{this.props.post.text}</p>
@@ -24,7 +23,6 @@ export default class Stream extends React.Component {
 		var postNodes = this.props.posts.map((post) => {
 			return (<Post key={post.id} post={post} />);
 		});
-		console.log('stream render: ', postNodes);
 		return (
 			<div className="stream">
 				<div className="list-group">

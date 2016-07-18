@@ -1,8 +1,13 @@
 import React from 'react';
 
+const ERROR_CLASS = 'has-error';
+
 export default class CommentBox extends React.Component {
 	constructor(props) {
 		super(props);
+
+		//vars
+		this._currentValidState = '';
 
 		//props
 		this.postCommentCallback = props.postCommentCallback;
@@ -18,21 +23,26 @@ export default class CommentBox extends React.Component {
 		this._postComment = (e) => this.postComment(e);
 	}
 	handleTextChange(e) {
-		this.setState({ charsLeft: (140 - e.target.value.length), commentText: e.target.value });
+
+		this.setState({ charsLeft: (140 - e.target.value.length),
+						commentText: e.target.value});
 	}
 	postComment(e) {
 		e.preventDefault();
-		this.postCommentCallback(this.state.commentText);
-		this.setState({charsLeft: 140, commentText: ''});
+
+		if (this.state.commentText) {
+			this.postCommentCallback(this.state.commentText);
+			this.setState({charsLeft: 140, commentText: ''});
+		}
 	}
 	render() {
 		return (
 		<div className="commentBox">
-	    	<form className="form" onSubmit={this._postComment}>
+	    	<form id="postForm" className="form" onSubmit={this._postComment}>
 			    <div className="input-group">
 					<input type="text" id="commentTextArea" className="form-control input-lg" placeholder="Write something..." maxLength="140" onChange={this._handleTextChange} value={this.state.commentText} />
 					<span className="input-group-btn">
-						<button className="btn btn-primary btn-lg" type="submit" onClick={this._postComment}><span className="glyphicon glyphicon-send"></span></button>
+						<button className="btn btn-primary btn-lg" type="submit" onClick={this._postComment}><span className="glyphicon glyphicon-share-alt"></span></button>
 					</span>
 			    </div>
 	    	</form>
