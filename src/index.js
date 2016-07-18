@@ -83,6 +83,6 @@ class TwatterApp extends React.Component {
 
 ReactDOM.render(
 	<TwatterApp />,
-	content
+	document.getElementById("content")
 );
 

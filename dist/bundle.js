@@ -49919,8 +49919,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var ERROR_CLASS = 'has-error';
-
 var CommentBox = function (_React$Component) {
 	_inherits(CommentBox, _React$Component);
 
@@ -49955,9 +49953,10 @@ var CommentBox = function (_React$Component) {
 	_createClass(CommentBox, [{
 		key: 'handleTextChange',
 		value: function handleTextChange(e) {
-
-			this.setState({ charsLeft: 140 - e.target.value.length,
-				commentText: e.target.value });
+			this.setState({
+				charsLeft: 140 - e.target.value.length,
+				commentText: e.target.value
+			});
 		}
 	}, {
 		key: 'postComment',
@@ -50380,6 +50379,6 @@ var TwatterApp = function (_React$Component) {
 	return TwatterApp;
 }(_react2.default.Component);
 
-_reactDom2.default.render(_react2.default.createElement(TwatterApp, null), content);
+_reactDom2.default.render(_react2.default.createElement(TwatterApp, null), document.getElementById("content"));
 
 },{"./CommentBox":509,"./Post":510,"./Stream":511,"./User":512,"react":386,"react-dom":239,"syncano":506}]},{},[513]);

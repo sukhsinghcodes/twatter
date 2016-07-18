@@ -1,7 +1,5 @@
 import React from 'react';
 
-const ERROR_CLASS = 'has-error';
-
 export default class CommentBox extends React.Component {
 	constructor(props) {
 		super(props);
@@ -23,9 +21,10 @@ export default class CommentBox extends React.Component {
 		this._postComment = (e) => this.postComment(e);
 	}
 	handleTextChange(e) {
-
-		this.setState({ charsLeft: (140 - e.target.value.length),
-						commentText: e.target.value});
+		this.setState({ 
+						charsLeft: (140 - e.target.value.length),
+						commentText: e.target.value
+					});
 	}
 	postComment(e) {
 		e.preventDefault();
