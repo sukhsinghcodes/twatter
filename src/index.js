@@ -7,6 +7,9 @@ import User from './User';
 import Syncano from 'syncano';
 import Cookies from 'cookies-js';
 
+import TV from 'term-vector';
+import TF from 'term-frequency';
+
 const instanceName = 'dry-sunset-6624', className = 'post', apiKey = '4b58726b15e671ddba0a2d569fff23c4120e9bf9', channelName = 'twatter-stream';
 
 class TwatterApp extends React.Component {
@@ -46,7 +49,7 @@ class TwatterApp extends React.Component {
 				.orderBy('-created_at')
 				.pageSize(this.pageSize)
 				.then((res) => {
-					var posts = [];
+					let posts = [];
 					res.forEach((post) => {
 						posts.push(new Post(post.id, post.text, post.author, post.created_at.toLocaleDateString('en-GB') + ' ' + post.created_at.toLocaleTimeString('en-GB')));
 					});
@@ -60,7 +63,7 @@ class TwatterApp extends React.Component {
 		}
 	}	
 	postComment(comment) {
-		var post = {
+		let post = {
 			text: comment,
 			author: this.state.alias,
 			instanceName: instanceName,
@@ -69,14 +72,27 @@ class TwatterApp extends React.Component {
 		}
 		this.sDO.please().create(post).then((p) => {
 			Cookies.set('alias', p.author);
+			let freq = TF.getTermFrequency(TV.getVector(p.text), {scheme: 'logNormalization'});
+			console.log(p.id);
+			freq.forEach((item, index) => {
+				this.sDO.please().create({
+					keyword: item[0][0],
+					weight: item[1],
+					postId: p.id,
+					instanceName: instanceName,
+					className: 'keywords'
+				}).then((k) => {
+					console.log(k);
+				});
+			});
 		});
 	}
 	aliasChange(alias) {
 		this.setState({alias: alias});
 	}
 	scrollHandler () {
-		var contentHeight = document.body.offsetHeight;
-		var y = this.window.scrollY + this.window.innerHeight;
+		let contentHeight = document.body.offsetHeight;
+		let y = this.window.scrollY + this.window.innerHeight;
 		if (y >= contentHeight) {
 			this.window.removeEventListener('scroll', () => this.scrollHandler());
 			this.pageSize += 10;
@@ -94,7 +110,7 @@ class TwatterApp extends React.Component {
 
 		this.poll.on('message', (message) => {
 			if (message.action === "create") {
-				var posts = this.state.posts;
+				let posts = this.state.posts;
 				posts.unshift(new Post(message.payload.id, message.payload.text, message.payload.author));
 				this.setState({posts: posts});
 				this.totalPosts ++;
@@ -121,6 +137,5 @@ class TwatterApp extends React.Component {
 		<TwatterApp window={window} />,
 		document.getElementById("content")
 	);
-
 })(window);
 

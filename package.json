@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "watchify -t [ babelify ] src/index.js -o dist/bundle.js -v",
+    "build": "browserify -t [ babelify ] -t stripify src/index.js -o dist/bundle.js -v",
+    "watch": "watchify -t [ babelify ] src/index.js -o dist/bundle.js -v",
     "dev": "lite-server"
   },
   "repository": {
@@ -28,7 +29,10 @@
     "react": "^15.0.1",
     "react-addons-css-transition-group": "^15.2.1",
     "react-dom": "^15.0.1",
+    "stripify": "^4.0.0",
     "syncano": "^1.0.22",
+    "term-frequency": "0.0.6",
+    "term-vector": "0.0.18",
     "watchify": "^3.7.0"
   }
 }
