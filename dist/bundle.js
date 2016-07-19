@@ -50288,19 +50288,28 @@ var TwatterApp = function (_React$Component) {
 	function TwatterApp(props) {
 		_classCallCheck(this, TwatterApp);
 
-		//vars
+		//props
 
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(TwatterApp).call(this, props));
 
+		_this.window = props.window;
+
+		//vars
+		_this.content = document.getElementById("content");
 		_this.syncano = (0, _syncano2.default)({
 			apiKey: apiKey,
 			instance: instanceName
 		});
 		_this.sDO = _this.syncano.DataObject;
 		_this.poll = _this.syncano.Channel.please().poll({ instanceName: instanceName, name: channelName });
+		_this.pageSize = 10;
+		_this.totalPosts = -1;
 
 		//state
-		_this.state = { posts: [], alias: 'Anonymous' };
+		_this.state = {
+			posts: [],
+			alias: 'Anonymous'
+		};
 
 		//event handlers
 		_this._postCommentCallback = function (c) {
@@ -50317,23 +50326,26 @@ var TwatterApp = function (_React$Component) {
 		value: function loadPostsFromServer() {
 			var _this2 = this;
 
-			this.sDO.please().list({ instanceName: instanceName, className: className }).orderBy('-created_at').pageSize(50).then(function (res) {
-				var posts = [];
-				res.forEach(function (post) {
-					posts.push(new _Post2.default(post.id, post.text, post.author, post.created_at.toLocaleDateString('en-GB') + ' ' + post.created_at.toLocaleTimeString('en-GB')));
+			if (this.state.posts.length < this.totalPosts) {
+				this.sDO.please().list({ instanceName: instanceName, className: className }).orderBy('-created_at').pageSize(this.pageSize).then(function (res) {
+					var posts = [];
+					res.forEach(function (post) {
+						posts.push(new _Post2.default(post.id, post.text, post.author, post.created_at.toLocaleDateString('en-GB') + ' ' + post.created_at.toLocaleTimeString('en-GB')));
+					});
+					if (_this2.state.posts !== posts) {
+						_this2.setState({ posts: posts });
+					}
+					_this2.window.addEventListener('scroll', function () {
+						return _this2.scrollHandler();
+					});
+				}).catch(function (err) {
+					console.log(err);
 				});
-				if (_this2.state.posts !== posts) {
-					_this2.setState({ posts: posts });
-				}
-			}).catch(function (err) {
-				console.log(err);
-			});
+			}
 		}
 	}, {
 		key: 'postComment',
 		value: function postComment(comment) {
-			var _this3 = this;
-
 			var post = {
 				text: comment,
 				author: this.state.alias,
@@ -50341,11 +50353,7 @@ var TwatterApp = function (_React$Component) {
 				className: className,
 				channel: channelName
 			};
-			this.sDO.please().create(post).then(function (post) {
-				var posts = _this3.state.posts;
-				posts.unshift(new _Post2.default(post.id, post.text, post.author));
-				_this3.setState({ posts: posts });
-			});
+			this.sDO.please().create(post).then();
 		}
 	}, {
 		key: 'aliasChange',
@@ -50353,16 +50361,42 @@ var TwatterApp = function (_React$Component) {
 			this.setState({ alias: alias });
 		}
 	}, {
+		key: 'scrollHandler',
+		value: function scrollHandler() {
+			var _this3 = this;
+
+			var contentHeight = document.body.offsetHeight;
+			var y = this.window.scrollY + this.window.innerHeight;
+			if (y >= contentHeight) {
+				this.window.removeEventListener('scroll', function () {
+					return _this3.scrollHandler();
+				});
+				this.pageSize += 10;
+				this.loadPostsFromServer();
+			}
+		}
+	}, {
 		key: 'componentDidMount',
 		value: function componentDidMount() {
 			var _this4 = this;
 
-			this.loadPostsFromServer();
-
-			this.poll.on('message', function (message) {
+			this.sDO.please().list({ instanceName: instanceName, className: className }).count().then(function (res) {
+				_this4.totalPosts = res.objects_count;
 				_this4.loadPostsFromServer();
 			});
+
+			this.poll.on('message', function (message) {
+				if (message.action === "create") {
+					var posts = _this4.state.posts;
+					posts.unshift(new _Post2.default(message.payload.id, message.payload.text, message.payload.author));
+					_this4.setState({ posts: posts });
+					_this4.totalPosts++;
+				}
+			});
 		}
+	}, {
+		key: 'componentWillUnmount',
+		value: function componentWillUnmount() {}
 	}, {
 		key: 'render',
 		value: function render() {
@@ -50379,6 +50413,8 @@ var TwatterApp = function (_React$Component) {
 	return TwatterApp;
 }(_react2.default.Component);
 
-_reactDom2.default.render(_react2.default.createElement(TwatterApp, null), document.getElementById("content"));
+(function (window) {
+	_reactDom2.default.render(_react2.default.createElement(TwatterApp, { window: window }), document.getElementById("content"));
+})(window);
 
 },{"./CommentBox":509,"./Post":510,"./Stream":511,"./User":512,"react":386,"react-dom":239,"syncano":506}]},{},[513]);
