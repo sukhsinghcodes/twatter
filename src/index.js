@@ -10,7 +10,8 @@ import Cookies from 'cookies-js';
 import TV from 'term-vector';
 import TF from 'term-frequency';
 
-const instanceName = 'dry-sunset-6624', className = 'post', apiKey = '4b58726b15e671ddba0a2d569fff23c4120e9bf9', channelName = 'twatter-stream';
+const instanceName = config.instanceName, postClassName = config.postClassName, keywordsClassName = config.keywordsClassName, apiKey = config.apiKey, channelName = config.channelName;
+
 
 class TwatterApp extends React.Component {
 	constructor(props) {
@@ -45,7 +46,7 @@ class TwatterApp extends React.Component {
 	loadPostsFromServer() {
 		if (this.state.posts.length < this.totalPosts) {
 			this.sDO.please()
-				.list({instanceName: instanceName, className: className})
+				.list({instanceName: instanceName, className: postClassName})
 				.orderBy('-created_at')
 				.pageSize(this.pageSize)
 				.then((res) => {
@@ -67,7 +68,7 @@ class TwatterApp extends React.Component {
 			text: comment,
 			author: this.state.alias,
 			instanceName: instanceName,
-			className: className,
+			className: postClassName,
 			channel: channelName
 		}
 		this.sDO.please().create(post).then((p) => {
@@ -80,7 +81,7 @@ class TwatterApp extends React.Component {
 					weight: item[1],
 					postId: p.id,
 					instanceName: instanceName,
-					className: 'keywords'
+					className: keywordsClassName
 				}).then((k) => {
 					console.log(k);
 				});
@@ -101,7 +102,7 @@ class TwatterApp extends React.Component {
 	}
 	componentDidMount() {
 		this.sDO.please()
-			.list({instanceName: instanceName, className: className})
+			.list({instanceName: instanceName, className: postClassName})
 			.count()
 			.then((res) => {
 				this.totalPosts = res.objects_count;

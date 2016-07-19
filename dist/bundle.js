@@ -53941,10 +53941,11 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var instanceName = 'dry-sunset-6624',
-    className = 'post',
-    apiKey = '4b58726b15e671ddba0a2d569fff23c4120e9bf9',
-    channelName = 'twatter-stream';
+var instanceName = config.instanceName,
+    postClassName = config.postClassName,
+    keywordsClassName = config.keywordsClassName,
+    apiKey = config.apiKey,
+    channelName = config.channelName;
 
 var TwatterApp = function (_React$Component) {
 	_inherits(TwatterApp, _React$Component);
@@ -53992,7 +53993,7 @@ var TwatterApp = function (_React$Component) {
 			var _this2 = this;
 
 			if (this.state.posts.length < this.totalPosts) {
-				this.sDO.please().list({ instanceName: instanceName, className: className }).orderBy('-created_at').pageSize(this.pageSize).then(function (res) {
+				this.sDO.please().list({ instanceName: instanceName, className: postClassName }).orderBy('-created_at').pageSize(this.pageSize).then(function (res) {
 					var posts = [];
 					res.forEach(function (post) {
 						posts.push(new _Post2.default(post.id, post.text, post.author, post.created_at.toLocaleDateString('en-GB') + ' ' + post.created_at.toLocaleTimeString('en-GB')));
@@ -54017,7 +54018,7 @@ var TwatterApp = function (_React$Component) {
 				text: comment,
 				author: this.state.alias,
 				instanceName: instanceName,
-				className: className,
+				className: postClassName,
 				channel: channelName
 			};
 			this.sDO.please().create(post).then(function (p) {
@@ -54030,7 +54031,7 @@ var TwatterApp = function (_React$Component) {
 						weight: item[1],
 						postId: p.id,
 						instanceName: instanceName,
-						className: 'keywords'
+						className: keywordsClassName
 					}).then(function (k) {
 						console.log(k);
 					});
@@ -54062,7 +54063,7 @@ var TwatterApp = function (_React$Component) {
 		value: function componentDidMount() {
 			var _this5 = this;
 
-			this.sDO.please().list({ instanceName: instanceName, className: className }).count().then(function (res) {
+			this.sDO.please().list({ instanceName: instanceName, className: postClassName }).count().then(function (res) {
 				_this5.totalPosts = res.objects_count;
 				_this5.loadPostsFromServer();
 			});
