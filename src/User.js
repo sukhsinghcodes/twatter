@@ -16,7 +16,7 @@ export default class User extends React.Component {
 	}
 	render() {
 		return (
-			<input className="form-control input-lg text-center center-block alias-input" type="text" placeholder="Alias..." maxLength="50" onChange={this._aliasChange} />
+			<input className="form-control input-lg text-center center-block alias-input" type="text" placeholder="Alias..." maxLength="50" onChange={this._aliasChange} value={this.props.alias} />
 		);
 	}
 }

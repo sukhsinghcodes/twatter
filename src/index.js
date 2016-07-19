@@ -5,6 +5,7 @@ import Stream from './Stream';
 import Post from './Post';
 import User from './User';
 import Syncano from 'syncano';
+import Cookies from 'cookies-js';
 
 const instanceName = 'dry-sunset-6624', className = 'post', apiKey = '4b58726b15e671ddba0a2d569fff23c4120e9bf9', channelName = 'twatter-stream';
 
@@ -25,12 +26,14 @@ class TwatterApp extends React.Component {
 		this.poll = this.syncano.Channel.please().poll({instanceName: instanceName, name: channelName});
 		this.pageSize = 10;
 		this.totalPosts = -1;
+		this.lastAlias = Cookies.get('alias');
+
 
 		//state
 		this.state = { 
-						posts: [], 
-						alias: 'Anonymous',
-						 };
+						posts: [],
+						alias: this.lastAlias || 'Anonymous',
+					};
 
 		//event handlers
 		this._postCommentCallback = (c) => this.postComment(c);
@@ -64,7 +67,9 @@ class TwatterApp extends React.Component {
 			className: className,
 			channel: channelName
 		}
-		this.sDO.please().create(post).then();
+		this.sDO.please().create(post).then((p) => {
+			Cookies.set('alias', p.author);
+		});
 	}
 	aliasChange(alias) {
 		this.setState({alias: alias});
@@ -95,13 +100,14 @@ class TwatterApp extends React.Component {
 				this.totalPosts ++;
 			}
 		});
+
 	}
 	componentWillUnmount() {
 	}
 	render() {
 		return (
 			<div>
-				<User aliasChangeCallback={this._aliasChangeCallback} />
+				<User aliasChangeCallback={this._aliasChangeCallback} alias={this.state.alias} />
 				<CommentBox postCommentCallback={this._postCommentCallback} />
 				<Stream posts={this.state.posts} />
 			</div>
