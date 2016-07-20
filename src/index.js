@@ -36,7 +36,7 @@ class TwatterApp extends React.Component {
 		//state
 		this.state = { 
 						posts: [],
-						alias: this.lastAlias || 'Anonymous',
+						alias: this.lastAlias || '',
 					};
 
 		//event handlers
@@ -66,7 +66,7 @@ class TwatterApp extends React.Component {
 	postComment(comment) {
 		let post = {
 			text: comment,
-			author: this.state.alias,
+			author: this.state.alias || 'Anonymous',
 			instanceName: instanceName,
 			className: postClassName,
 			channel: channelName

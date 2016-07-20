@@ -53831,7 +53831,7 @@ var Stream = function (_React$Component2) {
 exports.default = Stream;
 
 },{"react":395,"react-addons-css-transition-group":247}],525:[function(require,module,exports){
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
@@ -53839,7 +53839,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = require('react');
+var _react = require("react");
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -53871,15 +53871,15 @@ var User = function (_React$Component) {
 	}
 
 	_createClass(User, [{
-		key: 'handleAliasChange',
+		key: "handleAliasChange",
 		value: function handleAliasChange(e) {
 			e.preventDefault();
-			this.aliasChangeCallback(e.target.value || 'Anonymous');
+			this.aliasChangeCallback(e.target.value);
 		}
 	}, {
-		key: 'render',
+		key: "render",
 		value: function render() {
-			return _react2.default.createElement('input', { className: 'form-control input-lg text-center center-block alias-input', type: 'text', placeholder: 'Alias...', maxLength: '50', onChange: this._aliasChange, value: this.props.alias });
+			return _react2.default.createElement("input", { className: "form-control input-lg text-center center-block alias-input", type: "text", placeholder: "Alias...", maxLength: "50", onChange: this._aliasChange, value: this.props.alias });
 		}
 	}]);
 
@@ -53974,7 +53974,7 @@ var TwatterApp = function (_React$Component) {
 		//state
 		_this.state = {
 			posts: [],
-			alias: _this.lastAlias || 'Anonymous'
+			alias: _this.lastAlias || ''
 		};
 
 		//event handlers
@@ -54016,7 +54016,7 @@ var TwatterApp = function (_React$Component) {
 
 			var post = {
 				text: comment,
-				author: this.state.alias,
+				author: this.state.alias || 'Anonymous',
 				instanceName: instanceName,
 				className: postClassName,
 				channel: channelName

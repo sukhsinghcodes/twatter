@@ -12,7 +12,7 @@ export default class User extends React.Component {
 	}
 	handleAliasChange(e) {
 		e.preventDefault();
-		this.aliasChangeCallback((e.target.value || 'Anonymous'));
+		this.aliasChangeCallback(e.target.value);
 	}
 	render() {
 		return (
