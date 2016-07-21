@@ -7,8 +7,7 @@ import User from './User';
 import Syncano from 'syncano';
 import Cookies from 'cookies-js';
 
-import TV from 'term-vector';
-import TF from 'term-frequency';
+import NLP from 'nlp_compromise';
 
 const instanceName = config.instanceName, postClassName = config.postClassName, keywordsClassName = config.keywordsClassName, apiKey = config.apiKey, channelName = config.channelName;
 
@@ -73,17 +72,28 @@ class TwatterApp extends React.Component {
 		}
 		this.sDO.please().create(post).then((p) => {
 			Cookies.set('alias', p.author);
-			let freq = TF.getTermFrequency(TV.getVector(p.text), {scheme: 'logNormalization'});
-			console.log(p.id);
-			freq.forEach((item, index) => {
+
+			let keywords = [];
+
+			NLP.text(p.text).topics().forEach((item, index) => {
+				keywords.push(item.text);
+			});
+			NLP.text(p.text).terms().forEach((item, index) => {
+				if (item.tag === 'HashTag') {
+					keywords.push(item.normal);
+				}
+			});
+
+			console.log(keywords);
+
+			keywords.forEach((item, index) => {
 				this.sDO.please().create({
-					keyword: item[0][0],
-					weight: item[1],
+					keyword: item,
 					postId: p.id,
 					instanceName: instanceName,
 					className: keywordsClassName
 				}).then((k) => {
-					console.log(k);
+					console.log(k.keyword);
 				});
 			});
 		});
